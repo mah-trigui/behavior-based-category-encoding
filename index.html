@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Behavior-Based Category Encoding</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="container">
+      <h1>I Encoded Categories by How They Behave, Not by What They Are</h1>
+      <p class="subtitle">
+        Target-based encoding for high-cardinality support-case metadata
+      </p>
+      <div class="hero-buttons">
+        <a href="https://github.com/mah-trigui/behavior-based-category-encoding" class="btn primary">View Repository</a>
+        <a href="#idea" class="btn secondary">Explore Method</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <h2>Overview</h2>
+        <p>
+          This project contained multiple high-cardinality support-case metadata fields such as site, company, product, and user group.
+        </p>
+        <p>
+          One-hot encoding would explode dimensionality. Label encoding would introduce fake numeric order. So categories were encoded through their historical escalation behavior instead.
+        </p>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="container">
+        <h2>Architecture</h2>
+        <img src="images/architecture.jpg" alt="Behavior-based category encoding" class="architecture-image" />
+      </div>
+    </section>
+
+    <section class="section" id="idea">
+      <div class="container">
+        <h2>The Core Idea</h2>
+        <p>
+          A category value is not useful only because it is different from the others.
+        </p>
+        <p>
+          In many applied problems, what matters is how that category historically behaves relative to the target.
+        </p>
+        <div class="metric-box">
+          <p><strong>Encoding can represent category behavior instead of category identity.</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="container">
+        <h2>Selected code snippet</h2>
+        <pre>
+rates <- train[, .(
+    not_esc = sum(!(REFERENCEID %in% ref_ids_esc)),
+    esc = sum(REFERENCEID %in% ref_ids_esc)
+), by = SITENAME]
+
+rates[, site_enc := not_esc / (not_esc + esc) * 100]
+        </pre>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2>Why this mattered</h2>
+        <ul class="clean-list">
+          <li>avoided thousands of sparse dummy variables</li>
+          <li>avoided false ordinal meaning from label encoding</li>
+          <li>let a single numeric column capture category behavior</li>
+          <li>worked naturally with tree-based models and high-cardinality metadata</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="container">
+        <h2>Leakage awareness</h2>
+        <p>
+          Target-based encodings were computed on training data only, or handled with CatBoost-style ordered logic, to avoid leaking category outcomes back into the same rows.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2>Key Takeaway</h2>
+        <div class="metric-box">
+          <p><strong>I encoded categories by how they behave, not by what they are.</strong></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Built as a public project showcase for behavior-based encoding of high-cardinality categorical variables.</p>
+    </div>
+  </footer>
+</body>
+</html>
